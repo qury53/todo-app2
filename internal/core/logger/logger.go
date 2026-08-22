@@ -33,7 +33,8 @@ func NewLogger(config *Config) (*Logger, error) {
 	timestamp := time.Now().UTC().Format("2006-01-02T15-04-05.000000")
 	logFilePath := filepath.Join(config.LogFolder, timestamp+".log")
 
-	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+	fmt.Println(logFilePath)
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return nil, fmt.Errorf("open log file: %w", err)
 	}

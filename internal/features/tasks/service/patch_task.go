@@ -26,7 +26,5 @@ func (s *TasksService) PatchTask(
 		return domain.Task{}, fmt.Errorf("failed to patch task: %w", err)
 	}
 
-	fmt.Println(task)
-
 	return task, nil
 }

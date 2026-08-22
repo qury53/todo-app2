@@ -89,7 +89,6 @@ func (t *TasksTransport) PatchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(task)
 	responseHandler.RespondJSON(http.StatusOK, PatchTaskResponse(task))
 }
 
