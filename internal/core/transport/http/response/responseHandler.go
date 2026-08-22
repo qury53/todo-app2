@@ -1,0 +1,93 @@
+package transport_http_response
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/http"
+
+	core_errors "github.com/qury53/todo-app2/internal/core/errors"
+	core_logger "github.com/qury53/todo-app2/internal/core/logger"
+)
+
+type HTTPResponseHandler struct {
+	logger *core_logger.Logger
+	w      http.ResponseWriter
+}
+
+func NewHTTPResponseHandler(
+	logger *core_logger.Logger,
+	w http.ResponseWriter,
+) *HTTPResponseHandler {
+	return &HTTPResponseHandler{
+		logger: logger,
+		w:      w,
+	}
+}
+
+func (h *HTTPResponseHandler) RespondNoContent() {
+	h.w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *HTTPResponseHandler) RespondJSON(statusCode int, data any) {
+	h.w.WriteHeader(statusCode)
+	if err := json.NewEncoder(h.w).Encode(data); err != nil {
+		h.logger.Error("failed to write HTTP response")
+	}
+}
+
+func (h *HTTPResponseHandler) RespondError(message string, err error) {
+	var (
+		statusCode int
+		logFunc    func(msg string, args ...any)
+	)
+
+	switch {
+	case errors.Is(err, core_errors.ErrNotFound):
+		statusCode = http.StatusNotFound
+		logFunc = h.logger.Info
+	case errors.Is(err, core_errors.ErrInvalidArgument):
+		statusCode = http.StatusBadRequest
+		logFunc = h.logger.Info
+	case errors.Is(err, core_errors.ErrConflict):
+		statusCode = http.StatusConflict
+		logFunc = h.logger.Warn
+	default:
+		statusCode = http.StatusInternalServerError
+		logFunc = h.logger.Error
+	}
+
+	logFunc(message, "error", err)
+	h.errorRespond(statusCode, message, err)
+}
+
+func (h *HTTPResponseHandler) errorRespond(statusCode int, message string, err error) {
+	h.w.WriteHeader(statusCode)
+
+	errMsg := ""
+	if err != nil {
+		if statusCode < 500 {
+			errMsg = err.Error()
+		} else if statusCode >= 500 {
+			errMsg = "internal server error"
+		}
+	}
+
+	response := map[string]string{
+		"error":   errMsg,
+		"message": message,
+	}
+
+	if err := json.NewEncoder(h.w).Encode(response); err != nil {
+		h.logger.Error("failed to write err HTTP response")
+	}
+}
+
+func (h *HTTPResponseHandler) RespondPanic(p any, message string) {
+	h.logger.Error("got panic", "panic", p)
+	h.errorRespond(
+		http.StatusInternalServerError,
+		message,
+		fmt.Errorf("internal server error"),
+	)
+}
