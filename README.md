@@ -1,2 +1,15 @@
 # todo-app2
 # todo-app2
+
+
+#env example
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_TIMEOUT=30s
+POSTGRES_USER=testuser
+POSTGRES_PASSWORD=testpass
+POSTGRES_DATABASE=testdb
+LOG_FOLDER=/out/log/
+LOG_LEVEL=-4
+SERVER_ADDR=localhost:8080
+SERVER_SHUTDOWN_TIME=30s
