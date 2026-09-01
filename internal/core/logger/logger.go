@@ -34,7 +34,7 @@ func NewLogger(config *Config) (*Logger, error) {
 	logFilePath := filepath.Join(config.LogFolder, timestamp+".log")
 
 	fmt.Println(logFilePath)
-	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, os.ModeAppend)
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, 0o644)
 	if err != nil {
 		return nil, fmt.Errorf("open log file: %w", err)
 	}

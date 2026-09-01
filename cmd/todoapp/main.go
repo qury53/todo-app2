@@ -53,17 +53,20 @@ func main() {
 	poolConfig := core_pgx_pool.NewConfigMust()
 	pool, err := core_pgx_pool.NewPool(ctx, poolConfig)
 
+	logger.Debug("creating feature users")
 	//creating feature users
 	usersRepository := users_repository.NewUsersRepository(pool)
 	usersService := users_service.NewUsersService(usersRepository)
 	usersTransport := users_transport_http.NewUserTransport(usersService)
 
+	logger.Debug("creating feature tasks")
 	//creating feature tasks
 	tasksRepository := tasks_repository.NewTasksRepository(pool)
 	tasksService := tasks_service.NewTasksService(tasksRepository)
 	tasksTransport := tasks_transport_http.NewTasksTransport(tasksService)
-
 	//creating feature statistics
+
+	logger.Debug("creating feature statistics")
 	statisticsRepository := statistics_repository.NewStatisticsRepository(pool)
 	statisticsService := statistics_service.NewStatisticsService(statisticsRepository)
 	statisticsTransport := statistics_transport.NewStatisticsTransport(statisticsService)
