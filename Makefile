@@ -4,7 +4,7 @@ export PROJECT_ROOT=$(shell pwd)
 
 run:
 	go mod tidy && \
-	go run ${PROJECT_ROOT}/cmd/main.go
+	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
 
 docker-up:
 	docker compose up -d
@@ -53,3 +53,9 @@ migrate-down:
 			-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DATABASE}?sslmode=disable \
 			down "$(level)"; \
 	fi
+
+todoapp-deploy:
+	docker compose up -d --build todoapp
+
+ps:
+	docker compose ps

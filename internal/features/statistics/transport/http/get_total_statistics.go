@@ -13,7 +13,6 @@ func (t *StatisticsTransport) GetTotalStatistics(w http.ResponseWriter, r *http.
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)
 	responseHandler := transport_http_response.NewHTTPResponseHandler(logger, w)
-
 	stats, err := t.StatisticsService.GetTotalStatistics(ctx)
 	if err != nil {
 		responseHandler.RespondError("failed to get statistics", err)
