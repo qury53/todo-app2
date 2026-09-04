@@ -1,6 +1,6 @@
 package domain
 
 type Nullable[T any] struct {
-	Value *T
-	Set   bool
+	Value *T   `json:"value"`
+	Set   bool `json:"set"`
 }

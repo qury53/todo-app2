@@ -11,6 +11,16 @@ import (
 
 type GetTasksResponse []TaskDTO
 
+// GetTasks godoc
+// @Summary Gets tasks
+// Description Gets task from db
+// @Tags tasks
+// @Produce json
+// @Success 200 {object} GetTaskResponse "Successfully got tasks"
+// @Failure 400 {object} transport_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} transport_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} transport_http_response.ErrorResponse "Internal server error"
+// @Router /tasks/ [get]
 func (t *TasksTransport) GetTasks(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)
