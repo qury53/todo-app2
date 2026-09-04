@@ -8,8 +8,19 @@ import (
 	core_http_utils "github.com/qury53/todo-app2/internal/core/transport/http/utils"
 )
 
-type GetUserDTO UserDTO
+type GetUserResponse UserDTO
 
+// GetUser godoc
+// @Summary Gets user
+// Description Gets user from db
+// @Tags users
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} GetUserResponse "Successfully got user"
+// @Failure 400 {object} transport_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} transport_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} transport_http_response.ErrorResponse "Internal server error"
+// @Router /users/{id} [get]
 func (t *UserTransport) GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)
@@ -27,7 +38,7 @@ func (t *UserTransport) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responseHandler.RespondJSON(http.StatusOK, GetUserDTO(dtoFromDomain(user)))
+	responseHandler.RespondJSON(http.StatusOK, GetUserResponse(dtoFromDomain(user)))
 }
 
 // func getUserID(r *http.Request) (int, error) {
