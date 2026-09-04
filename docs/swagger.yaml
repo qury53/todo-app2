@@ -10,8 +10,10 @@ definitions:
   github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string:
     properties:
       set:
+        example: true
         type: boolean
       value:
+        example: some_value
         type: string
     type: object
   internal_features_tasks_transport.CreateTaskRequest:
@@ -161,6 +163,19 @@ definitions:
         type: integer
     type: object
   internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      email:
+        $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string'
+      full_name:
+        $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string'
+      password:
+        $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string'
+      phone_number:
+        $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string'
+    required:
+    - email
+    - full_name
+    - password
     type: object
   internal_features_users_transport_http.PatchUserResponse:
     properties:
@@ -212,7 +227,30 @@ info:
   title: Golang TODOAPP API
   version: "1.0"
 paths:
-  /task/:
+  /tasks/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully got tasks
+          schema:
+            $ref: '#/definitions/internal_features_tasks_transport.GetTaskResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+      summary: Gets tasks
+      tags:
+      - tasks
     post:
       consumes:
       - application/json
@@ -239,30 +277,6 @@ paths:
           schema:
             $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
       summary: creates task
-      tags:
-      - tasks
-  /tasks/:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully got tasks
-          schema:
-            $ref: '#/definitions/internal_features_tasks_transport.GetTaskResponse'
-        "400":
-          description: Bad request
-          schema:
-            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
-        "404":
-          description: Not found
-          schema:
-            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
-      summary: Gets tasks
       tags:
       - tasks
   /tasks/{id}:

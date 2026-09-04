@@ -27,7 +27,7 @@ type CreateTaskResponse TaskDTO
 // @Success 201 {object} CreateTaskResponse "Successfully created task"
 // @Failure 400 {object} transport_http_response.ErrorResponse "Bad request"
 // @Failure 500 {object} transport_http_response.ErrorResponse "Internal server error"
-// @Router /task/ [post]
+// @Router /tasks/ [post]
 func (t *TasksTransport) CreateTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)

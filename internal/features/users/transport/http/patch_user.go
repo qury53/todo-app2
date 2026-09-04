@@ -15,10 +15,10 @@ import (
 )
 
 type PatchUserRequest struct {
-	FullName    core_http_types.Nullable[string] `json:"full_name" validate:"required,min=3,max=100" example:"Ivanov Ivan Ivanovich"`
-	Password    core_http_types.Nullable[string] `json:"password" validate:"required,min=6,max=100" example:"124ojolsdjgOejoi"`
-	PhoneNumber core_http_types.Nullable[string] `json:"phone_number" validate:"omitempty,e164" example:"+79998887766"`
-	Email       core_http_types.Nullable[string] `json:"email" validate:"required,email" example:"some_mail@mail.ru"`
+	FullName    core_http_types.Nullable[string] `json:"full_name" validate:"required,min=3,max=100"`
+	Password    core_http_types.Nullable[string] `json:"password" validate:"required,min=6,max=100"`
+	PhoneNumber core_http_types.Nullable[string] `json:"phone_number" validate:"omitempty,e164"`
+	Email       core_http_types.Nullable[string] `json:"email" validate:"required,email"`
 }
 
 type PatchUserResponse UserDTO

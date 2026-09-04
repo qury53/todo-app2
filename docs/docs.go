@@ -18,7 +18,42 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/task/": {
+        "/tasks/": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Gets tasks",
+                "responses": {
+                    "200": {
+                        "description": "Successfully got tasks",
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_tasks_transport.GetTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -50,43 +85,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/tasks/": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Gets tasks",
-                "responses": {
-                    "200": {
-                        "description": "Successfully got tasks",
-                        "schema": {
-                            "$ref": "#/definitions/internal_features_tasks_transport.GetTaskResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not found",
                         "schema": {
                             "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
                         }
@@ -498,10 +496,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "set": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "some_value"
                 }
             }
         },
@@ -713,7 +713,26 @@ const docTemplate = `{
             }
         },
         "internal_features_users_transport_http.PatchUserRequest": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string"
+                },
+                "full_name": {
+                    "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string"
+                },
+                "password": {
+                    "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string"
+                },
+                "phone_number": {
+                    "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_types.Nullable-string"
+                }
+            }
         },
         "internal_features_users_transport_http.PatchUserResponse": {
             "type": "object",

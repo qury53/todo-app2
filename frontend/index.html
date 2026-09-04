@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Todo App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Todo App</h1>
+
+    <!-- Блок пользователя -->
+    <section id="user-section">
+      <h2>Пользователь</h2>
+
+      <!-- Создание пользователя -->
+      <form id="create-user-form">
+        <input type="text" id="user-full-name" placeholder="Полное имя" required />
+        <input type="email" id="user-email" placeholder="Email" required />
+        <input type="password" id="user-password" placeholder="Пароль" required />
+        <input type="text" id="user-phone" placeholder="Телефон (опционально)" />
+        <button type="submit">Создать пользователя</button>
+      </form>
+
+      <div id="current-user-info" style="display:none;">
+        <p>Текущий пользователь: <strong id="current-user-name"></strong> (id: <span id="current-user-id"></span>)</p>
+        <button id="clear-user-btn">Сменить пользователя</button>
+      </div>
+    </section>
+
+    <!-- Блок задач -->
+    <section id="tasks-section">
+      <h2>Задачи</h2>
+
+      <!-- Создание задачи -->
+      <form id="create-task-form" style="display:none;">
+        <input type="text" id="task-title" placeholder="Название задачи" required />
+        <textarea id="task-description" placeholder="Описание"></textarea>
+        <label>
+          <input type="checkbox" id="task-completed" />
+          Выполнено сразу
+        </label>
+        <button type="submit">Создать задачу</button>
+      </form>
+
+      <!-- Список задач -->
+      <div id="tasks-list"></div>
+      <button id="load-tasks-btn" style="display:none;">Обновить список задач</button>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
