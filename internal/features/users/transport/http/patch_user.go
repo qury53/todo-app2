@@ -53,6 +53,20 @@ func (r *PatchUserRequest) Validate() error {
 	return nil
 }
 
+// PatchUser godoc
+// @Summary Patches user
+// Description Patches user in db
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param patch body PatchUserRequest true "PatchRequestBody"
+// @Success 200 {object} PatchUserResponse "Patched user response"
+// @Failure 400 {object} transport_http_response.ErrorResponse "Bad request"
+// @Failure 401 {object} transport_http_response.ErrorResponse "Conflict"
+// @Failure 404 {object} transport_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} transport_http_response.ErrorResponse "Internal server error"
+// @Router /users/{id} [patch]
 func (t *UserTransport) PatchUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)

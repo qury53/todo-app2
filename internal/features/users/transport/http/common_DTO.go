@@ -3,12 +3,12 @@ package users_transport_http
 import "github.com/qury53/todo-app2/internal/core/domain"
 
 type UserDTO struct {
-	ID          int     `json:"id"`
-	Version     int     `json:"version"`
-	FullName    string  `json:"full_name"`
-	Password    string  `json:"password"`
-	PhoneNumber *string `json:"phone_number"`
-	Email       string  `json:"email"`
+	ID          int     `json:"id" example:"1"`
+	Version     int     `json:"version" example:"2"`
+	FullName    string  `json:"full_name" example:"Ivan Ivanov"`
+	Password    string  `json:"password" example:"qwerty123"`
+	PhoneNumber *string `json:"phone_number" example:"+79998887766"`
+	Email       string  `json:"email" example:"somemail@mail.ru"`
 }
 
 func dtoFromDomain(domain domain.User) UserDTO {

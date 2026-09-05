@@ -6,10 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	_ "github.com/qury53/todo-app2/docs"
 	core_logger "github.com/qury53/todo-app2/internal/core/logger"
 	core_pgx_pool "github.com/qury53/todo-app2/internal/core/repository/postgres"
 	core_http_middleware "github.com/qury53/todo-app2/internal/core/transport/http/middleware"
 	transport_http_server "github.com/qury53/todo-app2/internal/core/transport/http/server"
+	frontend_repository "github.com/qury53/todo-app2/internal/features/frontend/repository/file_system"
+	frontend_service "github.com/qury53/todo-app2/internal/features/frontend/service"
+	frontend_transport_http "github.com/qury53/todo-app2/internal/features/frontend/transport/http"
 	statistics_repository "github.com/qury53/todo-app2/internal/features/statistics/repository"
 	statistics_service "github.com/qury53/todo-app2/internal/features/statistics/service"
 	statistics_transport "github.com/qury53/todo-app2/internal/features/statistics/transport/http"
@@ -21,6 +25,12 @@ import (
 	users_transport_http "github.com/qury53/todo-app2/internal/features/users/transport/http"
 )
 
+// @title Golang TODOAPP API
+// @version 1.0
+// @description TODOAPP REST API scheme
+// @contact.name qury53
+// @contact.email lamerxdxd@gmail.com
+// @BasePath /api/v1
 func main() {
 	ctx, cancel := signal.NotifyContext(
 		context.Background(),
@@ -71,6 +81,11 @@ func main() {
 	statisticsService := statistics_service.NewStatisticsService(statisticsRepository)
 	statisticsTransport := statistics_transport.NewStatisticsTransport(statisticsService)
 
+	logger.Debug("creating feature frontend")
+	frontendRepository := frontend_repository.NewFrontendRepository()
+	frontendService := frontend_service.NewFrontendService(frontendRepository)
+	frontendTransport := frontend_transport_http.NewFrontendTransport(frontendService)
+
 	//creating apiVersionRouter
 	apiVersionRouter := transport_http_server.NewAPIVersionRouter("v1")
 
@@ -79,6 +94,8 @@ func main() {
 	apiVersionRouter.RegisterRoutes(tasksTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(statisticsTransport.Routes()...)
 	server.RegisterRouters(apiVersionRouter)
+	server.RegisterSwagger()
+	server.RegisterRoutes(frontendTransport.Routes()...)
 	err = server.Run(ctx)
 	if err != nil {
 		logger.Error("server error", "error", err)

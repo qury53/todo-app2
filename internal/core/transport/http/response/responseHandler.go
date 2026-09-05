@@ -36,6 +36,14 @@ func (h *HTTPResponseHandler) RespondJSON(statusCode int, data any) {
 	}
 }
 
+func (h *HTTPResponseHandler) RespondFile(statusCode int, file []byte) {
+	h.w.WriteHeader(statusCode)
+	_, err := h.w.Write(file)
+	if err != nil {
+		h.logger.Error("failed to write file", "error", err)
+	}
+}
+
 func (h *HTTPResponseHandler) RespondError(message string, err error) {
 	var (
 		statusCode int
@@ -73,9 +81,9 @@ func (h *HTTPResponseHandler) errorRespond(statusCode int, message string, err e
 		}
 	}
 
-	response := map[string]string{
-		"error":   errMsg,
-		"message": message,
+	response := ErrorResponse{
+		Error:   err.Error(),
+		Message: errMsg,
 	}
 
 	if err := json.NewEncoder(h.w).Encode(response); err != nil {

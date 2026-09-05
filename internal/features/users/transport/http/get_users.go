@@ -11,6 +11,16 @@ import (
 
 type GetUsersResponse []UserDTO
 
+// GetUsers godoc
+// @Summary Gets users
+// Description Gets users from db
+// @Tags users
+// @Produce json
+// @Success 200 {object} GetUsersResponse "Successfully got users"
+// @Failure 400 {object} transport_http_response.ErrorResponse "Bad request"
+// @Failure 404 {object} transport_http_response.ErrorResponse "Not found"
+// @Failure 500 {object} transport_http_response.ErrorResponse "Internal server error"
+// @Router /users/ [get]
 func (t *UserTransport) GetUsers(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := core_logger.FromContext(ctx)

@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/qury53/todo-app2/docs"
 	core_logger "github.com/qury53/todo-app2/internal/core/logger"
 	core_http_middleware "github.com/qury53/todo-app2/internal/core/transport/http/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type HTTPServer struct {
@@ -33,6 +35,32 @@ func (s *HTTPServer) RegisterRouters(routers ...*APIVersionRouter) {
 		r := router.WithMiddleware()
 		s.mux.Handle(prefix+"/", http.StripPrefix(prefix, r))
 	}
+}
+
+func (s *HTTPServer) RegisterRoutes(routes ...Route) {
+	for _, route := range routes {
+		r := route.WithMiddleware()
+		s.mux.Handle(fmt.Sprintf("%s %s", route.Method, route.Path), r)
+	}
+}
+
+func (s *HTTPServer) RegisterSwagger() {
+	s.mux.Handle(
+		"/swagger/",
+		httpSwagger.Handler(
+			httpSwagger.URL("/swagger/doc.json"),
+		),
+	)
+
+	s.mux.HandleFunc(
+		"/swagger/doc.json",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+			_, _ = w.Write([]byte(docs.SwaggerInfo.ReadDoc()))
+		},
+	)
 }
 
 func (s *HTTPServer) Run(ctx context.Context) error {
