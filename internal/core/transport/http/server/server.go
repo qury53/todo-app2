@@ -37,6 +37,13 @@ func (s *HTTPServer) RegisterRouters(routers ...*APIVersionRouter) {
 	}
 }
 
+func (s *HTTPServer) RegisterRoutes(routes ...Route) {
+	for _, route := range routes {
+		r := route.WithMiddleware()
+		s.mux.Handle(fmt.Sprintf("%s %s", route.Method, route.Path), r)
+	}
+}
+
 func (s *HTTPServer) RegisterSwagger() {
 	s.mux.Handle(
 		"/swagger/",
