@@ -31,6 +31,7 @@ func (r *UsersRepository) PatchUser(
 	RETURNING
 		id,
 		version,
+		username,
 		full_name,
 		password,
 		phone_number,
@@ -53,6 +54,7 @@ func (r *UsersRepository) PatchUser(
 	if err := row.Scan(
 		&patchedModel.ID,
 		&patchedModel.Version,
+		&patchedModel.Username,
 		&patchedModel.FullName,
 		&patchedModel.Password,
 		&patchedModel.PhoneNumber,

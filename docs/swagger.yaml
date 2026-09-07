@@ -16,6 +16,98 @@ definitions:
         example: some_value
         type: string
     type: object
+  internal_features_auth_transport_http.CreateUserRequest:
+    properties:
+      email:
+        example: somemail@mail.ru
+        type: string
+      full_name:
+        example: Ivan Ivanov
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        example: qwerty123
+        maxLength: 100
+        minLength: 6
+        type: string
+      phone_number:
+        example: "+79998887766"
+        type: string
+      username:
+        example: qerfasd33
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - email
+    - full_name
+    - password
+    - username
+    type: object
+  internal_features_auth_transport_http.CreateUserResponse:
+    properties:
+      email:
+        example: somemail@mail.ru
+        type: string
+      full_name:
+        example: Ivan Ivanov
+        type: string
+      id:
+        example: 1
+        type: integer
+      password:
+        example: qwerty123
+        type: string
+      phone_number:
+        example: "+79998887766"
+        type: string
+      username:
+        example: sadamhussein2001
+        type: string
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_auth_transport_http.LoginAccessTokenResponse:
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  internal_features_auth_transport_http.LoginUserRequest:
+    properties:
+      password:
+        example: qwerty123
+        maxLength: 100
+        minLength: 6
+        type: string
+      username:
+        example: sadamhussein2014
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  internal_features_auth_transport_http.RefreshAccessTokenResponse:
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  internal_features_auth_transport_http.RegisterUserResponse:
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+      user:
+        $ref: '#/definitions/internal_features_auth_transport_http.CreateUserResponse'
+    type: object
   internal_features_tasks_transport.CreateTaskRequest:
     properties:
       author_id:
@@ -115,10 +207,16 @@ definitions:
       phone_number:
         example: "+79998887766"
         type: string
+      username:
+        example: qerfasd33
+        maxLength: 100
+        minLength: 3
+        type: string
     required:
     - email
     - full_name
     - password
+    - username
     type: object
   internal_features_users_transport_http.CreateUserResponse:
     properties:
@@ -136,6 +234,9 @@ definitions:
         type: string
       phone_number:
         example: "+79998887766"
+        type: string
+      username:
+        example: sadamhussein2001
         type: string
       version:
         example: 2
@@ -157,6 +258,9 @@ definitions:
         type: string
       phone_number:
         example: "+79998887766"
+        type: string
+      username:
+        example: sadamhussein2001
         type: string
       version:
         example: 2
@@ -194,6 +298,9 @@ definitions:
       phone_number:
         example: "+79998887766"
         type: string
+      username:
+        example: sadamhussein2001
+        type: string
       version:
         example: 2
         type: integer
@@ -215,6 +322,9 @@ definitions:
       phone_number:
         example: "+79998887766"
         type: string
+      username:
+        example: sadamhussein2001
+        type: string
       version:
         example: 2
         type: integer
@@ -227,6 +337,88 @@ info:
   title: Golang TODOAPP API
   version: "1.0"
 paths:
+  /auth/login/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: LoginUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_auth_transport_http.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged in user
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.LoginAccessTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+      summary: Login user
+      tags:
+      - auth
+  /auth/refresh/:
+    post:
+      consumes:
+      - application/json
+      description: Uses refresh cookie to issue a new access token and rotate the
+        refresh cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully refreshed tokens
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.RefreshAccessTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - auth
+  /auth/register/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: CreateUser request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_auth_transport_http.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered user
+          schema:
+            $ref: '#/definitions/internal_features_auth_transport_http.RegisterUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse'
+      summary: creates user
+      tags:
+      - auth
   /tasks/:
     get:
       produces:

@@ -37,11 +37,16 @@ func (h *HTTPResponseHandler) RespondJSON(statusCode int, data any) {
 }
 
 func (h *HTTPResponseHandler) RespondFile(statusCode int, file []byte) {
+	h.w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	h.w.WriteHeader(statusCode)
 	_, err := h.w.Write(file)
 	if err != nil {
 		h.logger.Error("failed to write file", "error", err)
 	}
+}
+
+func (h *HTTPResponseHandler) RespondStatusCode(statusCode int) {
+	h.w.WriteHeader(statusCode)
 }
 
 func (h *HTTPResponseHandler) RespondError(message string, err error) {
@@ -60,6 +65,9 @@ func (h *HTTPResponseHandler) RespondError(message string, err error) {
 	case errors.Is(err, core_errors.ErrConflict):
 		statusCode = http.StatusConflict
 		logFunc = h.logger.Warn
+	case errors.Is(err, core_errors.ErrInvalidCredentials):
+		statusCode = http.StatusUnauthorized
+		logFunc = h.logger.Debug
 	default:
 		statusCode = http.StatusInternalServerError
 		logFunc = h.logger.Error

@@ -12,15 +12,16 @@ func (r *UsersRepository) CreateUser(ctx context.Context, userDomain domain.User
 	defer cancel()
 
 	query := `
-	INSERT INTO todoapp.users (full_name, password, phone_number, email)
-	VALUES ($1, $2, $3, $4)
-	RETURNING id, version, full_name, password, phone_number, email;
+	INSERT INTO todoapp.users (username, full_name, password, phone_number, email)
+	VALUES ($1, $2, $3, $4, $5)
+	RETURNING id, version, username, full_name, password, phone_number, email;
 	`
 
 	fmt.Println(userDomain)
 	row := r.Pool.QueryRow(
 		ctx,
 		query,
+		userDomain.Username,
 		userDomain.FullName,
 		userDomain.Password,
 		userDomain.PhoneNumber,
@@ -31,6 +32,7 @@ func (r *UsersRepository) CreateUser(ctx context.Context, userDomain domain.User
 	if err := row.Scan(
 		&userModel.ID,
 		&userModel.Version,
+		&userModel.Username,
 		&userModel.FullName,
 		&userModel.Password,
 		&userModel.PhoneNumber,
@@ -42,12 +44,12 @@ func (r *UsersRepository) CreateUser(ctx context.Context, userDomain domain.User
 	user := domain.NewUser(
 		userModel.ID,
 		userModel.Version,
+		userDomain.Username,
 		userModel.FullName,
 		userModel.Password,
 		userModel.PhoneNumber,
 		userModel.Email,
 	)
 
-	fmt.Println(*user.PhoneNumber)
 	return user, nil
 }

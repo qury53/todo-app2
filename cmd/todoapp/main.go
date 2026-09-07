@@ -11,6 +11,9 @@ import (
 	core_pgx_pool "github.com/qury53/todo-app2/internal/core/repository/postgres"
 	core_http_middleware "github.com/qury53/todo-app2/internal/core/transport/http/middleware"
 	transport_http_server "github.com/qury53/todo-app2/internal/core/transport/http/server"
+	auth_repostitory "github.com/qury53/todo-app2/internal/features/auth/repostitory"
+	auth_service "github.com/qury53/todo-app2/internal/features/auth/service"
+	auth_transport_http "github.com/qury53/todo-app2/internal/features/auth/transport/http"
 	frontend_repository "github.com/qury53/todo-app2/internal/features/frontend/repository/file_system"
 	frontend_service "github.com/qury53/todo-app2/internal/features/frontend/service"
 	frontend_transport_http "github.com/qury53/todo-app2/internal/features/frontend/transport/http"
@@ -47,12 +50,20 @@ func main() {
 	if err != nil {
 		log.Fatal("failed to create logger", err)
 	}
+	poolConfig := core_pgx_pool.NewConfigMust()
+	pool, err := core_pgx_pool.NewPool(ctx, poolConfig)
+
+	authConfig := auth_service.NewConfigMust()
+	authRepository := auth_repostitory.NewAuthRepository(pool)
+	authService := auth_service.NewAuthService(authConfig, authRepository)
+	authTransport := auth_transport_http.NewAuthTransport(authService)
 
 	//creating and running server
 	serverConfig := transport_http_server.NewConfigMust()
 	server := transport_http_server.NewHTTPServer(
 		serverConfig,
 		logger,
+		core_http_middleware.CORS(),
 		core_http_middleware.RequestID(),
 		core_http_middleware.Logger(logger),
 		core_http_middleware.Trace(),
@@ -60,8 +71,8 @@ func main() {
 	)
 
 	//creating connection pool
-	poolConfig := core_pgx_pool.NewConfigMust()
-	pool, err := core_pgx_pool.NewPool(ctx, poolConfig)
+	//poolConfig := core_pgx_pool.NewConfigMust()
+	//pool, err := core_pgx_pool.NewPool(ctx, poolConfig)
 
 	logger.Debug("creating feature users")
 	//creating feature users
@@ -86,6 +97,14 @@ func main() {
 	frontendService := frontend_service.NewFrontendService(frontendRepository)
 	frontendTransport := frontend_transport_http.NewFrontendTransport(frontendService)
 
+	//authConfig := auth_service.NewConfigMust()
+	log.Println(authConfig)
+	logger.Debug("creating feature auth")
+	//authRepository := auth_repostitory.NewAuthRepository(pool)
+	//authService := auth_service.NewAuthService(authConfig, authRepository)
+	//authTransport := auth_transport_http.NewAuthTransport(authService)
+	log.Printf("access TTL = %v, refresh TTL = %v", authService.AccessTokenTTL, authService.RefreshTokenTTL)
+	// сейчас увидишь: access TTL = 0s, refresh TTL = 0s
 	//creating apiVersionRouter
 	apiVersionRouter := transport_http_server.NewAPIVersionRouter("v1")
 
@@ -93,6 +112,7 @@ func main() {
 	apiVersionRouter.RegisterRoutes(usersTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(tasksTransport.Routes()...)
 	apiVersionRouter.RegisterRoutes(statisticsTransport.Routes()...)
+	apiVersionRouter.RegisterRoutes(authTransport.Routes()...)
 	server.RegisterRouters(apiVersionRouter)
 	server.RegisterSwagger()
 	server.RegisterRoutes(frontendTransport.Routes()...)
