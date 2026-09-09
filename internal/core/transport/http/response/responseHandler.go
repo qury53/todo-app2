@@ -80,18 +80,9 @@ func (h *HTTPResponseHandler) RespondError(message string, err error) {
 func (h *HTTPResponseHandler) errorRespond(statusCode int, message string, err error) {
 	h.w.WriteHeader(statusCode)
 
-	errMsg := ""
-	if err != nil {
-		if statusCode < 500 {
-			errMsg = err.Error()
-		} else if statusCode >= 500 {
-			errMsg = "internal server error"
-		}
-	}
-
 	response := ErrorResponse{
 		Error:   err.Error(),
-		Message: errMsg,
+		Message: message,
 	}
 
 	if err := json.NewEncoder(h.w).Encode(response); err != nil {

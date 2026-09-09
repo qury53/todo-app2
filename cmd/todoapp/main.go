@@ -97,13 +97,12 @@ func main() {
 	frontendService := frontend_service.NewFrontendService(frontendRepository)
 	frontendTransport := frontend_transport_http.NewFrontendTransport(frontendService)
 
-	//authConfig := auth_service.NewConfigMust()
-	log.Println(authConfig)
+	//log.Println(authConfig)
 	logger.Debug("creating feature auth")
 	//authRepository := auth_repostitory.NewAuthRepository(pool)
 	//authService := auth_service.NewAuthService(authConfig, authRepository)
 	//authTransport := auth_transport_http.NewAuthTransport(authService)
-	log.Printf("access TTL = %v, refresh TTL = %v", authService.AccessTokenTTL, authService.RefreshTokenTTL)
+	//log.Printf("access TTL = %v, refresh TTL = %v", authService.AccessTokenTTL, authService.RefreshTokenTTL)
 	// сейчас увидишь: access TTL = 0s, refresh TTL = 0s
 	//creating apiVersionRouter
 	apiVersionRouter := transport_http_server.NewAPIVersionRouter("v1")

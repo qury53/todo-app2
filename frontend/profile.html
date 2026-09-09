@@ -807,7 +807,7 @@ function toast(msg){
 /* ================================================================
    Навигация
    ================================================================ */
- $('#homeBtn').addEventListener('click', () => location.assign(INDEX_URL));
+ $('#homeBtn').addEventListener('click', () => location.assign("/"));
  $('#logoutBtn').addEventListener('click', () => {
   clearTimeout(refreshTimer);
   accessToken = null;
