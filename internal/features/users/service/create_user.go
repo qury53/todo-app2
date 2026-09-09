@@ -14,8 +14,6 @@ func (s *UserService) CreateUser(ctx context.Context, userDomain domain.User) (d
 		return domain.User{}, fmt.Errorf("create user service: %w", err)
 	}
 
-	fmt.Println("service")
-	fmt.Println(userDomain)
 	hashedPassword, err := core_encrypt.HashPassword(userDomain.Password)
 
 	if err != nil {

@@ -3,6 +3,7 @@ CREATE SCHEMA IF NOT EXISTS todoapp;
 CREATE TABLE todoapp.users (
     id SERIAL PRIMARY KEY,
     version BIGINT NOT NULL DEFAULT 1,
+    username VARCHAR(100) UNIQUE NOT NULL CHECK(char_length(username) BETWEEN 3 and 100),
     full_name VARCHAR(100) NOT NULL CHECK (char_length(full_name) BETWEEN 3 AND 100),
     password VARCHAR(255) NOT NULL,
     phone_number VARCHAR(15) CHECK (

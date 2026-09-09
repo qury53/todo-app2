@@ -37,11 +37,16 @@ func (h *HTTPResponseHandler) RespondJSON(statusCode int, data any) {
 }
 
 func (h *HTTPResponseHandler) RespondFile(statusCode int, file []byte) {
+	h.w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	h.w.WriteHeader(statusCode)
 	_, err := h.w.Write(file)
 	if err != nil {
 		h.logger.Error("failed to write file", "error", err)
 	}
+}
+
+func (h *HTTPResponseHandler) RespondStatusCode(statusCode int) {
+	h.w.WriteHeader(statusCode)
 }
 
 func (h *HTTPResponseHandler) RespondError(message string, err error) {
@@ -60,6 +65,9 @@ func (h *HTTPResponseHandler) RespondError(message string, err error) {
 	case errors.Is(err, core_errors.ErrConflict):
 		statusCode = http.StatusConflict
 		logFunc = h.logger.Warn
+	case errors.Is(err, core_errors.ErrInvalidCredentials):
+		statusCode = http.StatusUnauthorized
+		logFunc = h.logger.Debug
 	default:
 		statusCode = http.StatusInternalServerError
 		logFunc = h.logger.Error
@@ -72,18 +80,9 @@ func (h *HTTPResponseHandler) RespondError(message string, err error) {
 func (h *HTTPResponseHandler) errorRespond(statusCode int, message string, err error) {
 	h.w.WriteHeader(statusCode)
 
-	errMsg := ""
-	if err != nil {
-		if statusCode < 500 {
-			errMsg = err.Error()
-		} else if statusCode >= 500 {
-			errMsg = "internal server error"
-		}
-	}
-
 	response := ErrorResponse{
 		Error:   err.Error(),
-		Message: errMsg,
+		Message: message,
 	}
 
 	if err := json.NewEncoder(h.w).Encode(response); err != nil {

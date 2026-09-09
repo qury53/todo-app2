@@ -15,7 +15,7 @@ func (r *UsersRepository) GetUser(ctx context.Context, userID int) (domain.User,
 	defer cancel()
 
 	query := `
-	SELECT id, version, full_name, password, phone_number, email
+	SELECT id, version, username, full_name, password, phone_number, email
 	FROM todoapp.users
 	WHERE id = $1;
 	`
@@ -26,6 +26,7 @@ func (r *UsersRepository) GetUser(ctx context.Context, userID int) (domain.User,
 	err := row.Scan(
 		&user.ID,
 		&user.Version,
+		&user.Username,
 		&user.FullName,
 		&user.Password,
 		&user.PhoneNumber,

@@ -13,7 +13,7 @@ func (r *UsersRepository) GetUsers(ctx context.Context, limit *int, offset *int)
 	fmt.Println("inside repo")
 
 	query := `
-	SELECT id, version, full_name, password, phone_number, email
+	SELECT id, version, username, full_name, password, phone_number, email
 	FROM todoapp.users
 	ORDER BY id ASC
 	LIMIT $1
@@ -33,6 +33,7 @@ func (r *UsersRepository) GetUsers(ctx context.Context, limit *int, offset *int)
 		rows.Scan(
 			&user.ID,
 			&user.Version,
+			&user.Username,
 			&user.FullName,
 			&user.Password,
 			&user.PhoneNumber,

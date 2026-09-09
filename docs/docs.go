@@ -18,6 +18,131 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/login/": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "LoginUser request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_auth_transport_http.LoginUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged in user",
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_auth_transport_http.LoginAccessTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh/": {
+            "post": {
+                "description": "Uses refresh cookie to issue a new access token and rotate the refresh cookie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh access token",
+                "responses": {
+                    "200": {
+                        "description": "Successfully refreshed tokens",
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_auth_transport_http.RefreshAccessTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register/": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "creates user",
+                "parameters": [
+                    {
+                        "description": "CreateUser request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_auth_transport_http.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully registered user",
+                        "schema": {
+                            "$ref": "#/definitions/internal_features_auth_transport_http.RegisterUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qury53_todo-app2_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/": {
             "get": {
                 "produces": [
@@ -505,6 +630,133 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_features_auth_transport_http.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "full_name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "somemail@mail.ru"
+                },
+                "full_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Ivan Ivanov"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 6,
+                    "example": "qwerty123"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "qerfasd33"
+                }
+            }
+        },
+        "internal_features_auth_transport_http.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "somemail@mail.ru"
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "Ivan Ivanov"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "password": {
+                    "type": "string",
+                    "example": "qwerty123"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "sadamhussein2001"
+                },
+                "version": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "internal_features_auth_transport_http.LoginAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "token_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_features_auth_transport_http.LoginUserRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 6,
+                    "example": "qwerty123"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "sadamhussein2014"
+                }
+            }
+        },
+        "internal_features_auth_transport_http.RefreshAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "token_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_features_auth_transport_http.RegisterUserResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "token_type": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/internal_features_auth_transport_http.CreateUserResponse"
+                }
+            }
+        },
         "internal_features_tasks_transport.CreateTaskRequest": {
             "type": "object",
             "required": [
@@ -629,7 +881,8 @@ const docTemplate = `{
             "required": [
                 "email",
                 "full_name",
-                "password"
+                "password",
+                "username"
             ],
             "properties": {
                 "email": {
@@ -651,6 +904,12 @@ const docTemplate = `{
                 "phone_number": {
                     "type": "string",
                     "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "qerfasd33"
                 }
             }
         },
@@ -676,6 +935,10 @@ const docTemplate = `{
                 "phone_number": {
                     "type": "string",
                     "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "sadamhussein2001"
                 },
                 "version": {
                     "type": "integer",
@@ -705,6 +968,10 @@ const docTemplate = `{
                 "phone_number": {
                     "type": "string",
                     "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "sadamhussein2001"
                 },
                 "version": {
                     "type": "integer",
@@ -757,6 +1024,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "+79998887766"
                 },
+                "username": {
+                    "type": "string",
+                    "example": "sadamhussein2001"
+                },
                 "version": {
                     "type": "integer",
                     "example": 2
@@ -785,6 +1056,10 @@ const docTemplate = `{
                 "phone_number": {
                     "type": "string",
                     "example": "+79998887766"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "sadamhussein2001"
                 },
                 "version": {
                     "type": "integer",

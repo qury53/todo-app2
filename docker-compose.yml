@@ -15,6 +15,9 @@ services:
       - LOG_LEVEL=${LOG_LEVEL}
       - SERVER_ADDR=${SERVER_ADDR}
       - SERVER_SHUTDOWN_TIME=${SERVER_SHUTDOWN_TIME}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ACCESS_TOKEN_TTL=${JWT_ACCESS_TOKEN_TTL}
+      - JWT_REFRESH_TOKEN_TTL=${JWT_REFRESH_TOKEN_TTL}
     volumes:
       - ${PROJECT_ROOT}/out/logs:/app/out/logs
     ports:

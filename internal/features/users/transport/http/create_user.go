@@ -12,6 +12,7 @@ import (
 type CreateUserResponse UserDTO
 
 type CreateUserRequest struct {
+	Username    string  `json:"username" validate:"required,min=3,max=100" example:"qerfasd33"`
 	FullName    string  `json:"full_name" validate:"required,min=3,max=100" example:"Ivan Ivanov"`
 	Password    string  `json:"password" validate:"required,min=6,max=100" example:"qwerty123"`
 	PhoneNumber *string `json:"phone_number" validate:"omitempty,e164" example:"+79998887766"`
@@ -56,6 +57,7 @@ func (t *UserTransport) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func domainFromDTO(dto CreateUserRequest) domain.User {
 	return domain.NewUserUninitialized(
+		dto.Username,
 		dto.FullName,
 		dto.Password,
 		dto.PhoneNumber,

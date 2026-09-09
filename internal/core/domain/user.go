@@ -12,6 +12,7 @@ import (
 type User struct {
 	ID          int
 	Version     int
+	Username    string
 	FullName    string
 	Password    string
 	PhoneNumber *string
@@ -28,6 +29,7 @@ type UserPatch struct {
 func NewUser(
 	id int,
 	version int,
+	username string,
 	fullName string,
 	password string,
 	phoneNumber *string,
@@ -36,6 +38,7 @@ func NewUser(
 	return User{
 		ID:          id,
 		Version:     version,
+		Username:    username,
 		FullName:    fullName,
 		Password:    password,
 		PhoneNumber: phoneNumber,
@@ -58,6 +61,7 @@ func NewUserPatch(
 }
 
 func NewUserUninitialized(
+	username string,
 	fullName string,
 	password string,
 	phoneNumber *string,
@@ -66,6 +70,7 @@ func NewUserUninitialized(
 	return User{
 		ID:          userIDUnitialized,
 		Version:     userVersionUninitialized,
+		Username:    username,
 		FullName:    fullName,
 		Password:    password,
 		PhoneNumber: phoneNumber,
@@ -74,6 +79,11 @@ func NewUserUninitialized(
 }
 
 func (u *User) Validate() error {
+	usernameLength := utf8.RuneCountInString(u.FullName)
+	if usernameLength < 3 || usernameLength > 100 {
+		return fmt.Errorf("validation error, username must be between 3 and 100: %w", core_errors.ErrInvalidArgument)
+	}
+
 	fullNameLength := utf8.RuneCountInString(u.FullName)
 	if fullNameLength < 3 || fullNameLength > 100 {
 		return fmt.Errorf("validation error, fullname must be between 3 and 100: %w", core_errors.ErrInvalidArgument)

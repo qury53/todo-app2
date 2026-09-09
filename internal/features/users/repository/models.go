@@ -5,6 +5,7 @@ import "github.com/qury53/todo-app2/internal/core/domain"
 type UserModel struct {
 	ID          int     `db:"id"`
 	Version     int     `db:"version"`
+	Username    string  `db:"username"`
 	FullName    string  `db:"full_name"`
 	Password    string  `db:"password"`
 	PhoneNumber *string `db:"phone_number"`
@@ -15,6 +16,7 @@ func domainFromModel(model UserModel) domain.User {
 	return domain.User{
 		ID:          model.ID,
 		Version:     model.Version,
+		Username:    model.Username,
 		FullName:    model.FullName,
 		Password:    model.Password,
 		PhoneNumber: model.PhoneNumber,
